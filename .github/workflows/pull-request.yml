@@ -6,24 +6,23 @@ on:
 permissions:
   id-token: write
   contents: read
-  
+  pull-requests: read
+
 env:
   AZURE_RESOURCE_GROUP: pr-${{github.event.pull_request.number}}-rg
+
 jobs:
   clean-up-existing:
-    runs-on: ubuntu-latest
     uses: ./.github/workflows/tear-down.yml
     with:
       environment: pr
 
   build-and-deploy:
-    runs-on: ubuntu-latest
-    uses: ./.github/workflows/build-and-deploy.yml
+    uses: ./.github/workflows/tear-down.yml
     with:
       environment: pr
 
   clean-up:
-    runs-on: ubuntu-latest
     uses: ./.github/workflows/tear-down.yml
     with:
       environment: pr
