@@ -13,20 +13,17 @@ jobs:
   clean-up-existing:
     runs-on: ubuntu-latest
     uses: ./.github/workflows/tear-down.yml
-    secrets: inherit
     with:
       environment: pr
 
   build-and-deploy:
     runs-on: ubuntu-latest
     uses: ./.github/workflows/tear-down.yml
-    secrets: inherit
     with:
       environment: pr
 
   clean-up:
     runs-on: ubuntu-latest
     uses: ./.github/workflows/tear-down.yml
-    secrets: inherit
     with:
       environment: pr
