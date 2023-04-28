@@ -19,7 +19,6 @@ jobs:
 
   build-and-deploy:
     uses: ./.github/workflows/tear-down.yml
-    secrets: inherit
     with:
       environment: pr
 
@@ -27,3 +26,5 @@ jobs:
     uses: ./.github/workflows/tear-down.yml
     with:
       environment: pr
+
+
