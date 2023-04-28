@@ -18,7 +18,7 @@ jobs:
 
   build-and-deploy:
     runs-on: ubuntu-latest
-    uses: ./.github/workflows/tear-down.yml
+    uses: ./.github/workflows/build-and-deploy.yml
     with:
       environment: pr
 
