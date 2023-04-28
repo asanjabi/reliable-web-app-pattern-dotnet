@@ -9,7 +9,7 @@ permissions:
   pull-requests: read
 
 env:
-  AZURE_RESOURCE_GROUP: pr-${{github.event.pull_request.number}}-rg
+  AZURE_RESOURCE_GROUP: pr-${{ github.event.pull_request.number }}-rg
 
 jobs:
   clean-up-existing:
