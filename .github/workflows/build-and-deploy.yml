@@ -16,7 +16,7 @@ on:
       resource_group:
         required: false
         type: string
-        default: ${{ vars.AZURE_RESOURCE_GROUP }}
+        default: ''
 
 permissions:
   id-token: write
@@ -30,7 +30,8 @@ jobs:
       image: mcr.microsoft.com/azure-dev-cli-apps:latest
     env:
       AZURE_ENV_NAME: ${{ inputs.environment }}
-      AZURE_RESOURCE_GROUP: ${{ inputs.resource_group }}
+      # AZURE_RESOURCE_GROUP: ${{ inputs.resource_group }}
+      AZURE_RESOUCE_GROUP: "${{ input.resource_group == '' && vars.AZURE_RESOURCE_GROUP || input.resource_group }}"
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
@@ -38,6 +39,10 @@ jobs:
       PRINCIPAL_TYPE: ${{ vars.PRINCIPAL_TYPE }}
 
     steps:
+      - name: set-resource-group
+        if ${{ env.resource_group == '' }}
+        output: 
+
       - name: Checkout
         uses: actions/checkout@v3
         
