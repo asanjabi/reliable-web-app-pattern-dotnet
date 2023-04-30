@@ -24,7 +24,7 @@ jobs:
     if: ${{ always() }}
     needs: [clean-up-existing]
 
-    uses: ./.github/workflows/tear-down.yml
+    uses: ./.github/workflows/build-and-deploys.yml
     with:
       environment: pr
       resource_group: pr-${{ github.event.pull_request.number }}-rg
