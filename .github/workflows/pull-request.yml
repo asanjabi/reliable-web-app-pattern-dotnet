@@ -11,6 +11,7 @@ permissions:
 env:
   AZURE_RESOURCE_GROUP: pr-${{ github.event.pull_request.number }}-rg
 
+
 jobs:
   clean-up-existing:
     uses: ./.github/workflows/tear-down.yml
@@ -20,6 +21,7 @@ jobs:
 
   build-and-deploy:
     needs: [clean-up-existing]
+
     uses: ./.github/workflows/tear-down.yml
     with:
       environment: pr
