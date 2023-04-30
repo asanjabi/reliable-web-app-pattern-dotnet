@@ -17,6 +17,10 @@ on:
         required: false
         type: string
         default: ''
+      azure_environment_name:
+        required: false
+        type: string
+        default: ''
 
 permissions:
   id-token: write
@@ -29,8 +33,7 @@ jobs:
     container:
       image: mcr.microsoft.com/azure-dev-cli-apps:latest
     env:
-      AZURE_ENV_NAME: ${{ inputs.environment }}
-      # AZURE_RESOURCE_GROUP: ${{ inputs.resource_group }}
+      AZURE_ENV_NAME: ${{ inputs.azure_environment_name == '' &&  inputs.environment || inputs.azure_environment_name }}
       AZURE_RESOUCE_GROUP: "${{ inputs.resource_group == '' && vars.AZURE_RESOURCE_GROUP || inputs.resource_group }}"
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
