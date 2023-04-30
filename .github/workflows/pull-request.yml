@@ -17,7 +17,8 @@ jobs:
     uses: ./.github/workflows/tear-down.yml
     with:
       environment: pr
-      resource_group: ${{ env.AZURE_RESOURCE_GROUP }}
+      resource_group: pr-${{ github.event.pull_request.number }}-rg
+
 
   build-and-deploy:
     needs: [clean-up-existing]
@@ -27,6 +28,9 @@ jobs:
       environment: pr
       resource_group: ${{ env.AZURE_RESOURCE_GROUP }}
 
+
+
+      
   clean-up:
     needs: [build-and-deploy]
     uses: ./.github/workflows/tear-down.yml
