@@ -39,10 +39,6 @@ jobs:
       PRINCIPAL_TYPE: ${{ vars.PRINCIPAL_TYPE }}
 
     steps:
-      - name: set-resource-group
-        if ${{ env.resource_group == '' }}
-        output: 
-
       - name: Checkout
         uses: actions/checkout@v3
         
