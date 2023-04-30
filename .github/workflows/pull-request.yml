@@ -21,6 +21,7 @@ jobs:
 
 
   build-and-deploy:
+    if: ${{ always() }}
     needs: [clean-up-existing]
 
     uses: ./.github/workflows/tear-down.yml
