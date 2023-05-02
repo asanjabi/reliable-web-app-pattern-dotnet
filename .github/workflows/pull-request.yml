@@ -2,8 +2,8 @@
 
 name: "RWA PR build"
 on:
-  pull_request:
-    types: [opened, synchronize, ready_for_review, reopened]
+  # pull_request:
+  #   types: [opened, synchronize, ready_for_review, reopened]
 
 permissions:
   id-token: write
