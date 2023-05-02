@@ -69,11 +69,17 @@ jobs:
         shell: pwsh
         run: |
           mkdir buildartifacts
-          Copy-Item ./azure.yaml ./buildartifacts/azure.yaml
-          Copy-Item -R ./infra/ ./buildartifacts/infra/
-          Copy-Item -R ./src ./buildartifacts/src -Filter *.csproj
+          # Copy-Item ./azure.yaml ./buildartifacts/azure.yaml
+          # Copy-Item -R ./infra/ ./buildartifacts/infra/
+          # Copy-Item -R ./src ./buildartifacts/src -Filter *.csproj
           dir ./buildartifacts -s
-          $packageOutput= azd package --output json | ConvertFrom-Json -AsHashtable
+          azd package --output json > out.txt
+          type out.txt
+
+      - name: Copy Packages
+        shell: pwsh
+        run: |
+          $packageOutput= Get-Content out.txt -Raw | ConvertFrom-Json -AsHashtable
           write-host $packageOutput.services
           write-host $packageOutput.services.keys
           write-host $packageOutput.services['api'].packagePath
