@@ -68,6 +68,7 @@ jobs:
       - name: Create build artifacts
         shell: pwsh
         run: |
+          azd version
           mkdir buildartifacts
           # Copy-Item ./azure.yaml ./buildartifacts/azure.yaml
           # Copy-Item -R ./infra/ ./buildartifacts/infra/
