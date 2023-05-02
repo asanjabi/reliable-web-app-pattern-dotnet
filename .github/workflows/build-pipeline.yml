@@ -65,31 +65,48 @@ jobs:
       # - name: Test
       #   run: dotnet test ./src --no-restore --verbosity normal
 
-      - name: Create build artifacts
+      - name: Package the binaries
         shell: pwsh
         run: |
-          azd version
-          mkdir buildartifacts
-          # Copy-Item ./azure.yaml ./buildartifacts/azure.yaml
-          # Copy-Item -R ./infra/ ./buildartifacts/infra/
-          # Copy-Item -R ./src ./buildartifacts/src -Filter *.csproj
-          dir ./buildartifacts -s
-          azd package --no-prompt --output json --debug > out.txt
-          type out.txt
+          azd package --no-prompt --output json > package_result.json
 
-      - name: Copy Packages
-        shell: pwsh
-        run: |
-          $packageOutput= Get-Content out.txt -Raw | ConvertFrom-Json -AsHashtable
-          write-host $packageOutput.services
-          write-host $packageOutput.services.keys
-          write-host $packageOutput.services['api'].packagePath
-
-      - name: publish artifacts
+          $packageDir="./buildartifacts/packages"
+          mkdir $packageDir
+          Copy-Item package_result.json $packageDir
+        
+          $packageResult= Get-Content package_result.json -Raw | ConvertFrom-Json -AsHashtable
+        
+          $services = New-Object System.Collections.ArrayList
+          $packageResult.services.keys | \
+              ForEach-Object {$services.Add(@{"service"=$_; "package"=$packageResult.services[$_].packagePath | Split-Path -Leaf}); \
+              Copy-Item $packageResult.services[$_].packagePath $packageDir}
+          $manifest=@{}
+          $manifest.Add("services",$services)
+          $manifest.Add("timestamp",$packageResult.timestamp)
+          $manifest | convertto-json -Depth 20 | Out-File $packageDir/manifest.json
+  
+      - name: publish binaries
         uses: actions/upload-artifact@v3
         with:
-          name: my-artifact
-          path: path/to/artifact/ # or path/to/artifact
+          name: deployment-packages
+          path: $packageDir
+
+      - name: Copy infrastructure files
+        shell: pwsh
+        run: |
+          $infraDir="./buildartifacts/packages"
+          mkdir $infraDir
+          Copy-Item ./azure.yaml $infraDir
+          Copy-Item -R ./infra $infraDir
+          Copy-Item -R ./src $infraDir -Filter *.csproj
+          dir ./buildartifacts -s
+
+      - name: publish infra
+        uses: actions/upload-artifact@v3
+        with:
+            name: infra
+            path: $infraDir          
+
 
       # - name: Log in with Azure (Federated Credentials)
       #   if: ${{ env.AZURE_CLIENT_ID != '' }}
