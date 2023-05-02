@@ -11,13 +11,16 @@ on:
   workflow_call:
     inputs:
       environment:
+        description: 'GitHub environment where build variables and secrets are read from'
         required: true
         type: string
       resource_group:
+        description: 'Overrides the AZURE_RESOURCE_GROUP variable if provided. (ex. deploy each pr in its own resource group)'
         required: false
         type: string
         default: ''
       azure_environment_name:
+        description: 'azd environment name, by default same as GitHub environment'
         required: false
         type: string
         default: ''
