@@ -74,7 +74,7 @@ jobs:
           # Copy-Item -R ./infra/ ./buildartifacts/infra/
           # Copy-Item -R ./src ./buildartifacts/src -Filter *.csproj
           dir ./buildartifacts -s
-          azd package --output json --debug > out.txt
+          azd package --no-prompt --output json --debug > out.txt
           type out.txt
 
       - name: Copy Packages
