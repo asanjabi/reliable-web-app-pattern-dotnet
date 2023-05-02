@@ -77,8 +77,8 @@ jobs:
           $packageResult= Get-Content package_result.json -Raw | ConvertFrom-Json -AsHashtable
         
           $services = New-Object System.Collections.ArrayList
-          $packageResult.services.keys | \
-              ForEach-Object {$services.Add(@{"service"=$_; "package"=$packageResult.services[$_].packagePath | Split-Path -Leaf}); \
+          $packageResult.services.keys | 
+              ForEach-Object {$services.Add(@{"service"=$_; "package"=$packageResult.services[$_].packagePath | Split-Path -Leaf}); 
               Copy-Item $packageResult.services[$_].packagePath $packageDir}
           $manifest=@{}
           $manifest.Add("services",$services)
