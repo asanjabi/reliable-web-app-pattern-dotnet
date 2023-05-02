@@ -46,7 +46,7 @@ jobs:
       resource_group: pr-rwa-${{ github.event.pull_request.number }}-rg
       
   clean-up:
-    needs: [build-and-deploy]
+    needs: [deploy]
     uses: ./.github/workflows/tear-down.yml
     with:
       environment: pr
