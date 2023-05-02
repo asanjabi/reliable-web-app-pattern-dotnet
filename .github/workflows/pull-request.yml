@@ -4,6 +4,12 @@ name: "RWA PR build"
 on:
   # pull_request:
   #   types: [opened, synchronize, ready_for_review, reopened]
+  workflow_dispatch:
+    inputs:
+      github_environment:
+        description: 'GitHub environment where build variables and secrets are read from'
+        required: true
+        type: string
 
 permissions:
   id-token: write
@@ -12,7 +18,6 @@ permissions:
 
 env:
   AZURE_RESOURCE_GROUP: pr-${{ github.event.pull_request.number }}-rg
-
 
 jobs:
   clean-up-existing:
@@ -23,16 +28,22 @@ jobs:
       resource_group: pr-rwa-${{ github.event.pull_request.number }}-rg
 
 
-  build-and-deploy:
+  build:
     if: ${{ always() }}
     needs: [clean-up-existing]
 
-    uses: ./.github/workflows/build-and-deploy.yml
+    uses: ./.github/workflows/build.yml
+    with:
+      environment: pr
+
+  deploy:
+    if: ${{ always() }}
+    needs: [build]
+    uses: ./.github/workflows/deploy.yml
     with:
       environment: pr
       azure_environment_name: pr-rwa-${{ github.event.pull_request.number }}
       resource_group: pr-rwa-${{ github.event.pull_request.number }}-rg
-
       
   clean-up:
     needs: [build-and-deploy]

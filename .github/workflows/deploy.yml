@@ -2,15 +2,9 @@
 # See the README markdown file for further details
 
 on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        required: true
-        type: string
-
   workflow_call:
     inputs:
-      environment:
+      github_environment:
         description: 'GitHub environment where build variables and secrets are read from'
         required: true
         type: string
@@ -30,13 +24,16 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  deploy:
     environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/azure-dev-cli-apps:latest
     env:
-      AZURE_ENV_NAME: ${{ inputs.azure_environment_name == '' &&  inputs.environment || inputs.azure_environment_name }}
+      #If an azure environment is provided use it, otherwise use the github environment.
+      #This is used by azd to tag the resource group to deploy to.
+      AZURE_ENV_NAME: ${{ inputs.azure_environment_name == '' &&  inputs.github_environment || inputs.azure_environment_name }}
+      #If a resourcegroup is provided use it, otherwise use the default resource group for the environment
       AZURE_RESOUCE_GROUP: "${{ inputs.resource_group == '' && vars.AZURE_RESOURCE_GROUP || inputs.resource_group }}"
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
@@ -45,9 +42,12 @@ jobs:
       PRINCIPAL_TYPE: ${{ vars.PRINCIPAL_TYPE }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+
+      - name: Display structure of downloaded files
+        run: ls -R
+          
       - name: Log in with Azure (Federated Credentials)
         if: ${{ env.AZURE_CLIENT_ID != '' }}
         run: |
@@ -62,4 +62,8 @@ jobs:
         run: azd provision --no-prompt
 
       - name: Azure Dev Deploy
-        run: azd deploy --no-prompt
+        shell: pwsh
+        run: |
+          $manifest= Get-Content manifest.json -Raw | ConvertFrom-Json -AsHashtable
+          $manifest.services | ForEach-Object `
+            {azd deploy $_.service --from-package $_.package --debug}

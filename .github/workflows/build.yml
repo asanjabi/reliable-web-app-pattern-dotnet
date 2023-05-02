@@ -1,32 +1,23 @@
 # This file is part of the sample that  you can use to build your devOps automation.
 # See the README markdown file for further details
 
+#This workflow builds the source code, runs the unit tests and if successful,
+#will publish build and infrastructure artifacts.
+
 on:
   workflow_dispatch:
     inputs:
-      environment:
+      github_environment:
         description: 'GitHub environment where build variables and secrets are read from'
         required: true
         type: string
-
+      
   workflow_call:
     inputs:
-      environment:
+      github_environment:
         description: 'GitHub environment where build variables and secrets are read from'
         required: true
         type: string
-
-      resource_group:
-        description: 'Overrides the AZURE_RESOURCE_GROUP variable if provided. (ex. deploy each pr in its own resource group)'
-        required: false
-        type: string
-        default: ''
-
-      azure_environment_name:
-        description: 'azd environment name, by default same as GitHub environment'
-        required: false
-        type: string
-        default: ''
 
 permissions:
   id-token: write
@@ -34,39 +25,31 @@ permissions:
 
 jobs:
   build:
-    environment: ${{ inputs.environment }}
+    environment: ${{ inputs.github_environment }}
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/azure-dev-cli-apps:latest
     env:
-    #   AZURE_ENV_NAME: ${{ inputs.azure_environment_name == '' &&  inputs.environment || inputs.azure_environment_name }}
-    #   AZURE_RESOUCE_GROUP: "${{ inputs.resource_group == '' && vars.AZURE_RESOURCE_GROUP || inputs.resource_group }}"
-    #   AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
-    #   AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-    #   AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
-    #   AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
-    #   PRINCIPAL_TYPE: ${{ vars.PRINCIPAL_TYPE }}
         BINARY_ARTIFACTS_DIR: "./buildartifacts/packages"
         INFRA_ARTIFACTS_DIR: "./buildartifacts/infra"
-
 
     steps:
       - name: Chekout
         uses: actions/checkout@v3
 
-      # - name: Setup .NET Core SDK
-      #   uses: actions/setup-dotnet@v3
-      #   with:
-      #     dotnet-version: '6.0.x'
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
 
-      # - name: Install dependencies
-      #   run: dotnet restore ./src
+      - name: Install dependencies
+        run: dotnet restore ./src
 
-      # - name: Build
-      #   run: dotnet build ./src --configuration Release --no-restore
+      - name: Build
+        run: dotnet build ./src --configuration Release --no-restore
 
-      # - name: Test
-      #   run: dotnet test ./src --no-restore --verbosity normal
+      - name: Test
+        run: dotnet test ./src --no-restore --verbosity normal
 
       - name: Package the binaries
         shell: pwsh
@@ -80,8 +63,8 @@ jobs:
           $packageResult= Get-Content package_result.json -Raw | ConvertFrom-Json -AsHashtable
         
           $services = New-Object System.Collections.ArrayList
-          $packageResult.services.keys | 
-              ForEach-Object {$services.Add(@{"service"=$_; "package"=$packageResult.services[$_].packagePath | Split-Path -Leaf}); 
+          $packageResult.services.keys | `
+              ForEach-Object {$services.Add(@{"service"=$_; "package"=$packageResult.services[$_].packagePath | Split-Path -Leaf}); `
               Copy-Item $packageResult.services[$_].packagePath $packageDir}
           $manifest=@{}
           $manifest.Add("services",$services)
@@ -109,20 +92,3 @@ jobs:
         with:
             name: infra
             path: ${{ env.INFRA_ARTIFACTS_DIR }}          
-
-
-      # - name: Log in with Azure (Federated Credentials)
-      #   if: ${{ env.AZURE_CLIENT_ID != '' }}
-      #   run: |
-      #     azd auth login `
-      #       --client-id "$Env:AZURE_CLIENT_ID" `
-      #       --federated-credential-provider "github" `
-      #       --tenant-id "$Env:AZURE_TENANT_ID" `
-      #       --debug
-      #   shell: pwsh
-
-      # - name: Azure Dev Provision
-      #   run: azd provision --no-prompt
-
-      # - name: Azure Dev Deploy
-      #   run: azd deploy --no-prompt
