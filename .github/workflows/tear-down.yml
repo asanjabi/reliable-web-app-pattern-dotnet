@@ -1,13 +1,13 @@
 on:
   workflow_dispatch:
     inputs:
-      environment:
+      github_environment:
         required: true
         type: string
 
   workflow_call:
     inputs:
-      environment:
+      github_environment:
         required: true
         type: string
       resource_group:

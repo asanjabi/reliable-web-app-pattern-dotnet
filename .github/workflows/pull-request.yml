@@ -5,11 +5,11 @@ on:
   # pull_request:
   #   types: [opened, synchronize, ready_for_review, reopened]
   workflow_dispatch:
-    inputs:
-      github_environment:
-        description: 'GitHub environment where build variables and secrets are read from'
-        required: true
-        type: string
+    # inputs:
+    #   github_environment:
+    #     description: 'GitHub environment where build variables and secrets are read from'
+    #     required: true
+    #     type: string
 
 permissions:
   id-token: write
@@ -23,7 +23,7 @@ jobs:
   clean-up-existing:
     uses: ./.github/workflows/tear-down.yml
     with:
-      environment: pr
+      github_environment: pr
       azure_environment_name: pr-rwa-${{ github.event.pull_request.number }}
       resource_group: pr-rwa-${{ github.event.pull_request.number }}-rg
 
@@ -34,14 +34,14 @@ jobs:
 
     uses: ./.github/workflows/build.yml
     with:
-      environment: pr
+      github_environment: pr
 
   deploy:
     if: ${{ always() }}
     needs: [build]
     uses: ./.github/workflows/deploy.yml
     with:
-      environment: pr
+      github_environment: pr
       azure_environment_name: pr-rwa-${{ github.event.pull_request.number }}
       resource_group: pr-rwa-${{ github.event.pull_request.number }}-rg
       
@@ -49,7 +49,7 @@ jobs:
     needs: [deploy]
     uses: ./.github/workflows/tear-down.yml
     with:
-      environment: pr
+      github_environment: pr
       azure_environment_name: pr-rwa-${{ github.event.pull_request.number }}
       resource_group: pr-rwa-${{ github.event.pull_request.number }}-rg
 
