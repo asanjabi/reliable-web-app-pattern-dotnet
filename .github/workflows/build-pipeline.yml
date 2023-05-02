@@ -71,7 +71,7 @@ jobs:
           azd package --no-prompt --output json > package_result.json
 
           $packageDir="./buildartifacts/packages"
-          New-Ntem -itemtype Directory $packageDir
+          New-Item -itemtype Directory $packageDir
           Copy-Item package_result.json $packageDir
         
           $packageResult= Get-Content package_result.json -Raw | ConvertFrom-Json -AsHashtable
@@ -95,7 +95,7 @@ jobs:
         shell: pwsh
         run: |
           $infraDir="./buildartifacts/packages"
-          New-Ntem -itemtype Directory $infraDir
+          New-Item -itemtype Directory $infraDir
           Copy-Item ./azure.yaml $infraDir
           Copy-Item -R ./infra $infraDir
           Copy-Item -R ./src $infraDir -Filter *.csproj
