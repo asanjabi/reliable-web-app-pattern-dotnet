@@ -1,7 +1,9 @@
-name: "RWA- PR build"
+# Each pr get's its own environment that gets cleaned up if the deploy is successful
+
+name: "RWA PR build"
 on:
-  pull_request:
-    types: [opened, synchronize, ready_for_review, reopened]
+  # pull_request:
+  #   types: [opened, synchronize, ready_for_review, reopened]
 
 permissions:
   id-token: write
@@ -9,20 +11,34 @@ permissions:
   pull-requests: read
 
 env:
-  AZURE_RESOURCE_GROUP: pr-${{github.event.pull_request.number}}-rg
+  AZURE_RESOURCE_GROUP: pr-${{ github.event.pull_request.number }}-rg
+
 
 jobs:
   clean-up-existing:
     uses: ./.github/workflows/tear-down.yml
     with:
       environment: pr
+      azure_environment_name: pr-rwa-${{ github.event.pull_request.number }}
+      resource_group: pr-rwa-${{ github.event.pull_request.number }}-rg
+
 
   build-and-deploy:
-    uses: ./.github/workflows/tear-down.yml
-    with:
-      environment: pr
+    if: ${{ always() }}
+    needs: [clean-up-existing]
 
+    uses: ./.github/workflows/build-and-deploy.yml
+    with:
+      environment: pr
+      azure_environment_name: pr-rwa-${{ github.event.pull_request.number }}
+      resource_group: pr-rwa-${{ github.event.pull_request.number }}-rg
+
+      
   clean-up:
+    needs: [build-and-deploy]
     uses: ./.github/workflows/tear-down.yml
     with:
       environment: pr
+      azure_environment_name: pr-rwa-${{ github.event.pull_request.number }}
+      resource_group: pr-rwa-${{ github.event.pull_request.number }}-rg
+

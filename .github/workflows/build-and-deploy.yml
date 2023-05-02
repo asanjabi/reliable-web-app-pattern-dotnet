@@ -11,8 +11,19 @@ on:
   workflow_call:
     inputs:
       environment:
+        description: 'GitHub environment where build variables and secrets are read from'
         required: true
         type: string
+      resource_group:
+        description: 'Overrides the AZURE_RESOURCE_GROUP variable if provided. (ex. deploy each pr in its own resource group)'
+        required: false
+        type: string
+        default: ''
+      azure_environment_name:
+        description: 'azd environment name, by default same as GitHub environment'
+        required: false
+        type: string
+        default: ''
 
 permissions:
   id-token: write
@@ -25,12 +36,12 @@ jobs:
     container:
       image: mcr.microsoft.com/azure-dev-cli-apps:latest
     env:
-      AZURE_ENV_NAME: ${{ inputs.environment }}
+      AZURE_ENV_NAME: ${{ inputs.azure_environment_name == '' &&  inputs.environment || inputs.azure_environment_name }}
+      AZURE_RESOUCE_GROUP: "${{ inputs.resource_group == '' && vars.AZURE_RESOURCE_GROUP || inputs.resource_group }}"
+      AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+      AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
-      AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
-      AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
       PRINCIPAL_TYPE: ${{ vars.PRINCIPAL_TYPE }}
 
     steps:
@@ -44,6 +55,7 @@ jobs:
             --client-id "$Env:AZURE_CLIENT_ID" `
             --federated-credential-provider "github" `
             --tenant-id "$Env:AZURE_TENANT_ID" `
+            --debug
         shell: pwsh
 
       - name: Azure Dev Provision
