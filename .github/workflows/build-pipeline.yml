@@ -51,6 +51,8 @@ jobs:
       - name: Chekout
         uses: actions/checkout@v3
 
+      - name: 
+
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v3
         with:
@@ -65,10 +67,18 @@ jobs:
       - name: Test
         run: dotnet test ./src --no-restore --verbosity normal
 
-      - name: 123
+      - name: Create build artifacts
+        shell: pwsh
         run: |
-          jq --version
-          azd package --output json
+          mkdir buildartifacts
+          cp ./azure.yaml ./buildartifacts/azure.yaml
+          cp -R ./infra/ ./buildartifacts/infra/
+          cp -R ./src ./buildartifacts/src -Filter *.csproj
+          $packageOutput= azd package --output json | ConvertFrom-Json -AsHashtable
+          foreach($service in $packageOutput.services.keys)
+          {
+            write-host $packageOutput.services[$service].name
+          } 
 
       # - name: Log in with Azure (Federated Credentials)
       #   if: ${{ env.AZURE_CLIENT_ID != '' }}
