@@ -73,7 +73,7 @@ jobs:
         run: |
           azd package --no-prompt --output json > package_result.json
 
-          $packageDir= ${{ env.BINARY_ARTIFACTS_DIR }}
+          $packageDir="${{ env.BINARY_ARTIFACTS_DIR }}"
           New-Item -Force -Itemtype Directory $packageDir
           Copy-Item package_result.json $packageDir
         
@@ -97,7 +97,7 @@ jobs:
       - name: Copy infrastructure files
         shell: pwsh
         run: |
-          $infraDir=${{ env.INFRA_ARTIFACTS_DIR }}
+          $infraDir="${{ env.INFRA_ARTIFACTS_DIR }}"
           New-Item -Force -Itemtype Directory $infraDir
           Copy-Item ./azure.yaml $infraDir
           Copy-Item -R ./infra $infraDir
