@@ -38,14 +38,14 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/azure-dev-cli-apps:latest
-    # env:
-    #   AZURE_ENV_NAME: ${{ inputs.azure_environment_name == '' &&  inputs.environment || inputs.azure_environment_name }}
-    #   AZURE_RESOUCE_GROUP: "${{ inputs.resource_group == '' && vars.AZURE_RESOURCE_GROUP || inputs.resource_group }}"
-    #   AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
-    #   AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-    #   AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
-    #   AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
-    #   PRINCIPAL_TYPE: ${{ vars.PRINCIPAL_TYPE }}
+    env:
+      AZURE_ENV_NAME: ${{ inputs.azure_environment_name == '' &&  inputs.environment || inputs.azure_environment_name }}
+      AZURE_RESOUCE_GROUP: "${{ inputs.resource_group == '' && vars.AZURE_RESOURCE_GROUP || inputs.resource_group }}"
+      AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+      AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+      PRINCIPAL_TYPE: ${{ vars.PRINCIPAL_TYPE }}
 
     steps:
       - name: Chekout
@@ -74,7 +74,7 @@ jobs:
           # Copy-Item -R ./infra/ ./buildartifacts/infra/
           # Copy-Item -R ./src ./buildartifacts/src -Filter *.csproj
           dir ./buildartifacts -s
-          azd package --output json > out.txt
+          azd package --output json --debug > out.txt
           type out.txt
 
       - name: Copy Packages
