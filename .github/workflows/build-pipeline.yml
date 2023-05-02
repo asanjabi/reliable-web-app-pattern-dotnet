@@ -65,7 +65,11 @@ jobs:
       - name: Test
         run: dotnet test ./src --no-restore --verbosity normal
 
- 
+      - name: 123
+        run: |
+          jq --version
+          azd package --output json
+
       # - name: Log in with Azure (Federated Credentials)
       #   if: ${{ env.AZURE_CLIENT_ID != '' }}
       #   run: |
