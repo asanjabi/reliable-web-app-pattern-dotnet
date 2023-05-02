@@ -73,10 +73,16 @@ jobs:
           cp -R ./infra/ ./buildartifacts/infra/
           cp -R ./src ./buildartifacts/src -Filter *.csproj
           $packageOutput= azd package --output json | ConvertFrom-Json -AsHashtable
-          foreach($service in $packageOutput.services.keys)
-          {
-            write-host $packageOutput.services[$service].name
-          } 
+          foreach($service in $packageOutput.services.keys) \
+          { \
+            write-host $packageOutput.services[$service].name \
+          } \
+
+      - name: publish artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: my-artifact
+          path: path/to/artifact/ # or path/to/artifact
 
       # - name: Log in with Azure (Federated Credentials)
       #   if: ${{ env.AZURE_CLIENT_ID != '' }}
