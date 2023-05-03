@@ -62,8 +62,8 @@ jobs:
       - name: Download deployment packages
         uses: actions/download-artifact@v3
         with:
-          name: infra
-          path: ${{ env.INFRA_ARTIFACTS_DIR }}      
+          name: deployment-packages
+          path: ${{ env.BINARY_ARTIFACTS_DIR }}      
 
       - name: Display structure of downloaded files
         run: ls -R
