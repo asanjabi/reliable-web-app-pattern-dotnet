@@ -8,16 +8,24 @@ on:
         description: 'GitHub environment where build variables and secrets are read from'
         required: true
         type: string
+
       resource_group:
         description: 'Overrides the AZURE_RESOURCE_GROUP variable if provided. (ex. deploy each pr in its own resource group)'
         required: false
         type: string
         default: ''
+
       azure_environment_name:
         description: 'azd environment name, by default same as GitHub environment'
         required: false
         type: string
         default: ''
+
+      run_integration_test:
+        description: 'Set to false to skip running integration tests'
+        required: false
+        type: boolean
+        default: true
 
 permissions:
   id-token: write
@@ -82,3 +90,8 @@ jobs:
           $manifest= Get-Content manifest.json -Raw | ConvertFrom-Json -AsHashtable
           $manifest.services | ForEach-Object `
             {azd deploy $_.service --from-package $_.package --debug}
+
+      - name: Run integration tests
+        if: ${{ inputs.run_integration_test }}
+        shell: pwsh
+        run: ls -R
