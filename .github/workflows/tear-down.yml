@@ -24,7 +24,8 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  tear_down:
+    continue-on-error: true
     environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
     container:

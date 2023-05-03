@@ -21,7 +21,6 @@ env:
 
 jobs:
   clean-up-existing:
-    continue-on-error: true
     uses: ./.github/workflows/tear-down.yml
     with:
       github_environment: pr
