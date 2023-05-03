@@ -24,7 +24,7 @@ permissions:
   contents: read
 
 jobs:
-  deploy:
+  deploy_to_azure:
     environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
     container:
@@ -61,7 +61,6 @@ jobs:
         run: ls -R
           
       - name: Log in with Azure (Federated Credentials)
-        if: ${{ env.AZURE_CLIENT_ID != '' }}
         run: |
           azd auth login `
             --client-id "$Env:AZURE_CLIENT_ID" `

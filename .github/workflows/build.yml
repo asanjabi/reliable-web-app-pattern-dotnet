@@ -45,10 +45,10 @@ jobs:
       - name: Install dependencies
         run: dotnet restore ./src
 
-      - name: Build
+      - name: Build projects
         run: dotnet build ./src --configuration Release --no-restore
 
-      - name: Test
+      - name: Run Unit tests
         run: dotnet test ./src --no-restore --verbosity normal
 
       - name: Package the binaries
@@ -71,7 +71,7 @@ jobs:
           $manifest.Add("timestamp",$packageResult.timestamp)
           $manifest | convertto-json -Depth 20 | Out-File $packageDir/manifest.json
   
-      - name: publish binaries
+      - name: Publish binaries
         uses: actions/upload-artifact@v3
         with:
           name: deployment-packages
@@ -87,7 +87,7 @@ jobs:
           Copy-Item -R ./src $infraDir -Filter *.csproj
           dir ./buildartifacts -s
 
-      - name: publish infra
+      - name: Publish infrastructure files
         uses: actions/upload-artifact@v3
         with:
             name: infra
