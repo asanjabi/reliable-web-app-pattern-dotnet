@@ -58,7 +58,8 @@ jobs:
 
           $packageDir="${{ env.BINARY_ARTIFACTS_DIR }}"
           New-Item -Force -Itemtype Directory $packageDir
-          Copy-Item package_result.json $packageDir
+          Copy-Item ./package_result.json $packageDir
+          Copy-Item ./azure.yaml $packageDir
         
           $packageResult= Get-Content package_result.json -Raw | ConvertFrom-Json -AsHashtable
         
