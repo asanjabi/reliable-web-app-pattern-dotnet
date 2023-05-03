@@ -81,7 +81,7 @@ jobs:
         shell: pwsh
         working-directory: ${{ env.INFRA_ARTIFACTS_DIR }}
         run: |
-          azd provision --no-prompt
+          azd provision --no-prompt --debug
 
       - name: Azure Dev Deploy
         shell: pwsh
@@ -89,7 +89,7 @@ jobs:
         run: |
           $manifest= Get-Content manifest.json -Raw | ConvertFrom-Json -AsHashtable
           $manifest.services | ForEach-Object `
-            {azd deploy $_.service --from-package $_.package --debug}
+            {azd deploy $_.service --from-package $_.package --no-prompt --debug}
 
       - name: Run integration tests
         if: ${{ inputs.run_integration_test }}
