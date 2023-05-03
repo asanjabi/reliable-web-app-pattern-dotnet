@@ -33,7 +33,7 @@ permissions:
 
 jobs:
   deploy_to_azure:
-    environment: ${{ inputs.environment }}
+    environment: ${{ inputs.github_environment }}
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/azure-dev-cli-apps:latest

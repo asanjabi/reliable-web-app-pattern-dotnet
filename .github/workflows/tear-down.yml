@@ -26,7 +26,7 @@ permissions:
 jobs:
   tear_down:
     continue-on-error: true
-    environment: ${{ inputs.environment }}
+    environment: ${{ inputs.github_environment }}
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/azure-dev-cli-apps:latest
