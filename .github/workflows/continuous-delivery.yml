@@ -1,0 +1,38 @@
+# Each pr get's its own environment that gets cleaned up if the deploy is successful
+
+name: "RWA PR Build"
+   
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+      
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: read
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+    with:
+      github_environment: dev
+
+  deploy_dev:
+    name: Deploy to development environment
+    if: ${{ always() }}
+    needs: [build]
+    uses: ./.github/workflows/deploy.yml
+    with:
+      github_environment: dev
+      run_integration_test: true
+      
+  deploy_prod:
+    name: Deploy to production environment
+    if: ${{ always() }}
+    needs: [build]
+    uses: ./.github/workflows/deploy.yml
+    with:
+      github_environment: prod     
