@@ -1,6 +1,6 @@
 # Each pr get's its own environment that gets cleaned up if the deploy is successful
 
-name: "RWA PR Build"
+name: "RWA CI Build"
 
 on:
   schedule:
