@@ -49,13 +49,13 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: infra
-          path: ${{ vars.INFRA_ARTIFACTS_DIR }}
+          path: ${{ env.INFRA_ARTIFACTS_DIR }}
 
       - name: Download deployment packages
         uses: actions/download-artifact@v3
         with:
           name: infra
-          path: ${{ vars.INFRA_ARTIFACTS_DIR }}      
+          path: ${{ env.INFRA_ARTIFACTS_DIR }}      
 
       - name: Display structure of downloaded files
         run: ls -R
@@ -72,14 +72,14 @@ jobs:
 
       - name: Azure Dev Provision
         shell: pwsh
+        working-directory: ${{ env.INFRA_ARTIFACTS_DIR }}
         run: |
-          Set-Location ${{ vars.INFRA_ARTIFACTS_DIR }}
           azd provision --no-prompt
 
       - name: Azure Dev Deploy
         shell: pwsh
+        working-directory: ${{ env.BINARY_ARTIFACTS_DIR }}
         run: |
-          Set-Location ${{ vars.BINARY_ARTIFACTS_DIR }}
           $manifest= Get-Content manifest.json -Raw | ConvertFrom-Json -AsHashtable
           $manifest.services | ForEach-Object `
             {azd deploy $_.service --from-package $_.package --debug}
