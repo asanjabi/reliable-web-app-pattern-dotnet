@@ -16,15 +16,15 @@ permissions:
   pull-requests: read
 
 jobs:
-  build:
-    uses: ./.github/workflows/build.yml
-    with:
-      github_environment: dev
+  # build:
+  #   uses: ./.github/workflows/build.yml
+  #   with:
+  #     github_environment: dev
 
   deploy_dev:
     name: Deploy to development environment
     if: ${{ always() }}
-    needs: [build]
+    # needs: [build]
     concurrency:
       group: CD-Dev
     uses: ./.github/workflows/deploy.yml
