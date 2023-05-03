@@ -40,10 +40,15 @@ jobs:
       AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
       PRINCIPAL_TYPE: ${{ vars.PRINCIPAL_TYPE }}
+      BUILD_ARTIFACTS_ROOT: "./buildartifacts"
+      BINARY_ARTIFACTS_DIR: "./buildartifacts/packages"
+      INFRA_ARTIFACTS_DIR: "./buildartifacts/infra"
 
     steps:
       - name: Download all artifacts
         uses: actions/download-artifact@v3
+        with:
+          path: ./
 
       - name: Display structure of downloaded files
         run: ls -R
