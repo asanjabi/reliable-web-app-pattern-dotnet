@@ -45,10 +45,17 @@ jobs:
       INFRA_ARTIFACTS_DIR: "./buildartifacts/infra"
 
     steps:
-      - name: Download all artifacts
+      - name: Download infra artifacts
         uses: actions/download-artifact@v3
         with:
-          path: ./
+          name: infra
+          path: ${{ var.INFRA_ARTIFACTS_DIR }}
+
+      - name: Download deployment packages
+        uses: actions/download-artifact@v3
+        with:
+          name: infra
+          path: ${{ var.INFRA_ARTIFACTS_DIR }}      
 
       - name: Display structure of downloaded files
         run: ls -R
@@ -64,11 +71,15 @@ jobs:
         shell: pwsh
 
       - name: Azure Dev Provision
-        run: azd provision --no-prompt
+        shell: pwsh
+        run: |
+          Set-Location ${{ var.INFRA_ARTIFACTS_DIR }}
+          azd provision --no-prompt
 
       - name: Azure Dev Deploy
         shell: pwsh
         run: |
+          Set-Location ${{ var.BINARY_ARTIFACTS_DIR }}
           $manifest= Get-Content manifest.json -Raw | ConvertFrom-Json -AsHashtable
           $manifest.services | ForEach-Object `
             {azd deploy $_.service --from-package $_.package --debug}
