@@ -27,7 +27,6 @@ jobs:
     needs: [build]
     concurrency:
       group: CD-Dev
-      cancel-in-progress: true
     uses: ./.github/workflows/deploy.yml
     with:
       github_environment: dev
@@ -38,7 +37,6 @@ jobs:
     needs: [deploy_dev]
     concurrency:
       group: CD-Prod
-      cancel-in-progress: true
     uses: ./.github/workflows/deploy.yml
     with:
       github_environment: prod     
