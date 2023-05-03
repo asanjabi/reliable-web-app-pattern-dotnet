@@ -24,7 +24,7 @@ jobs:
   deploy_dev:
     name: Deploy to development environment
     if: ${{ always() }}
-    # needs: [build]
+    needs: [build]
     concurrency:
       group: CD-Dev
     uses: ./.github/workflows/deploy.yml
