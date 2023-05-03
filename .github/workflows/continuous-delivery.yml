@@ -31,7 +31,6 @@ jobs:
       
   deploy_prod:
     name: Deploy to production environment
-    if: ${{ always() }}
     needs: [deploy_dev]
     uses: ./.github/workflows/deploy.yml
     with:

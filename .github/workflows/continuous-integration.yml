@@ -39,6 +39,7 @@ jobs:
       run_integration_test: true
       
   clean-up:
+    if: ${{ always() }}
     needs: [deploy]
     uses: ./.github/workflows/tear-down.yml
     with:
