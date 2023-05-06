@@ -54,8 +54,8 @@ jobs:
       AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
       PRINCIPAL_TYPE: ${{ vars.PRINCIPAL_TYPE }}
       BUILD_ARTIFACTS_ROOT: "./buildartifacts"
-      BINARY_ARTIFACTS_DIR: "./buildartifacts/packages"
-      INFRA_ARTIFACTS_DIR: "./buildartifacts/infra"
+      BINARY_ARTIFACTS_DIR: "./buildartifacts"
+      INFRA_ARTIFACTS_DIR: "./buildartifacts"
 
     steps:
       - name: Download infra artifacts
