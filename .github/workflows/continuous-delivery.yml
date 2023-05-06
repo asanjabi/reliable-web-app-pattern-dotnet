@@ -26,7 +26,7 @@ jobs:
     if: ${{ always() }}
     needs: [build]
     concurrency:
-      group: CD-Dev
+      group: Dev-deploy
     uses: ./.github/workflows/deploy.yml
     with:
       github_environment: dev
