@@ -46,7 +46,7 @@ jobs:
       #For now RG is AZURE_ENVIRONMENT_NAME+rg
       #If a resourcegroup is provided use it, otherwise use the default resource group for the environment
       #AZURE_RESOURCE_GROUP: ${{ inputs.resource_group == '' && vars.AZURE_RESOURCE_GROUP || inputs.resource_group }}
-      AZURE_RESOUCE_GROUP:  ${{ inputs.azure_environment_name == '' &&  vars.AZURE_ENV_NAME || inputs.azure_environment_name }}-rg
+      AZURE_RESOURCE_GROUP:  ${{ inputs.azure_environment_name == '' &&  vars.AZURE_ENV_NAME || inputs.azure_environment_name }}-rg
 
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
