@@ -12,12 +12,11 @@ on:
         required: true
         type: string
 
-      #Currently ignored since azd is not working well with overrideing the RG
-      # resource_group:
-      #   description: 'Overrides the AZURE_RESOURCE_GROUP variable if provided. (ex. deploy each pr in its own resource group)'
-      #   required: false
-      #   type: string
-      #   default: ''
+      resource_group:
+        description: 'Overrides the AZURE_RESOURCE_GROUP variable if provided. (ex. deploy each pr in its own resource group)'
+        required: false
+        type: string
+        default: ''
 
       azure_environment_name:
         description: 'azd environment name, this also defines which resource group your app deploys to'
@@ -42,10 +41,8 @@ jobs:
       #This is used by azd to tag the resource group to deploy to.
       AZURE_ENV_NAME: ${{ inputs.azure_environment_name == '' &&  vars.AZURE_ENV_NAME || inputs.azure_environment_name }}
 
-      #For now RG is AZURE_ENVIRONMENT_NAME+rg
       #If a resourcegroup is provided use it, otherwise use the default resource group for the environment
-      #AZURE_RESOURCE_GROUP: ${{ inputs.resource_group == '' && vars.AZURE_RESOURCE_GROUP || inputs.resource_group }}
-      AZURE_RESOURCE_GROUP:  ${{ inputs.azure_environment_name == '' &&  vars.AZURE_ENV_NAME || inputs.azure_environment_name }}-rg
+      AZURE_RESOURCE_GROUP: ${{ inputs.resource_group == '' && vars.AZURE_RESOURCE_GROUP || inputs.resource_group }}
 
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
@@ -64,5 +61,11 @@ jobs:
             --tenant-id "$Env:AZURE_TENANT_ID"
         shell: pwsh
 
+      - name: Temproary fix for resource group
+        shell: pwsh
+        working-directory: ${{ env.INFRA_ARTIFACTS_DIR }}
+        run: |
+          Add-Content azure.yaml "`nresourceGroup: "${{ env.AZURE_RESOURCE_GROUP }}
+          
       - name: Azure Dev Down
         run: azd down --force --purge --no-prompt

@@ -21,8 +21,7 @@ jobs:
     uses: ./.github/workflows/tear-down.yml
     with:
       github_environment: pr
-      azure_environment_name: rwa-pr-${{ github.event.pull_request.number }}
-      #resource_group: pr-rwa-${{ github.event.pull_request.number }}-rg
+      resource_group: rwa-pr-${{ github.event.pull_request.number }}-rg
 
   build:
     if: ${{ always() }}
@@ -38,8 +37,7 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     with:
       github_environment: pr
-      azure_environment_name: rwa-pr-${{ github.event.pull_request.number }}
-      #resource_group: pr-rwa-${{ github.event.pull_request.number }}-rg
+      resource_group: rwa-pr-${{ github.event.pull_request.number }}-rg
       run_integration_test: true
       
   clean-up:
@@ -48,6 +46,5 @@ jobs:
     uses: ./.github/workflows/tear-down.yml
     with:
       github_environment: pr
-      azure_environment_name: rwa-pr-${{ github.event.pull_request.number }}
-      #resource_group: pr-rwa-${{ github.event.pull_request.number }}-rg
+      resource_group: rwa-pr-${{ github.event.pull_request.number }}-rg
 
