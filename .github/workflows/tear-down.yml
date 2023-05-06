@@ -65,7 +65,7 @@ jobs:
         shell: pwsh
         working-directory: ${{ env.INFRA_ARTIFACTS_DIR }}
         run: |
-          Add-Content azure.yaml "`nresourceGroup: "${{ env.AZURE_RESOURCE_GROUP }}
-          
+          Add-Content azure.yaml "`nresourceGroup: ${{ env.AZURE_RESOURCE_GROUP }}"
+
       - name: Azure Dev Down
         run: azd down --force --purge --no-prompt
