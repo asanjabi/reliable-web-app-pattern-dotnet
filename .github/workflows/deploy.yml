@@ -9,14 +9,15 @@ on:
         required: true
         type: string
 
-      resource_group:
-        description: 'Overrides the AZURE_RESOURCE_GROUP variable if provided. (ex. deploy each pr in its own resource group)'
-        required: false
-        type: string
-        default: ''
+        #Currently ignored since azd is not working well with overrideing the RG
+      # resource_group:
+      #   description: 'Overrides the AZURE_RESOURCE_GROUP variable if provided. (ex. deploy each pr in its own resource group)'
+      #   required: false
+      #   type: string
+      #   default: ''
 
       azure_environment_name:
-        description: 'azd environment name, by default same as GitHub environment'
+        description: 'azd environment name, this also defines which resource group your app deploys to'
         required: false
         type: string
         default: ''
@@ -40,9 +41,13 @@ jobs:
     env:
       #If an azure environment is provided use it, otherwise use the github environment.
       #This is used by azd to tag the resource group to deploy to.
-      AZURE_ENV_NAME: ${{ inputs.azure_environment_name == '' &&  inputs.github_environment || inputs.azure_environment_name }}
+      AZURE_ENV_NAME: ${{ inputs.azure_environment_name == '' &&  vars.AZURE_ENV_NAME || inputs.azure_environment_name }}
+
+      #For now RG is AZURE_ENVIRONMENT_NAME+rg
       #If a resourcegroup is provided use it, otherwise use the default resource group for the environment
-      AZURE_RESOURCE_GROUP: ${{ inputs.resource_group == '' && vars.AZURE_RESOURCE_GROUP || inputs.resource_group }}
+      #AZURE_RESOURCE_GROUP: ${{ inputs.resource_group == '' && vars.AZURE_RESOURCE_GROUP || inputs.resource_group }}
+      AZURE_RESOUCE_GROUP:  ${{ inputs.azure_environment_name == '' &&  vars.AZURE_ENV_NAME || inputs.azure_environment_name }}-rg
+
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}

@@ -22,7 +22,7 @@ jobs:
     with:
       github_environment: pr
       azure_environment_name: pr-rwa-${{ github.event.pull_request.number }}
-      resource_group: pr-rwa-${{ github.event.pull_request.number }}-rg
+      #resource_group: pr-rwa-${{ github.event.pull_request.number }}-rg
 
   build:
     if: ${{ always() }}
@@ -39,7 +39,7 @@ jobs:
     with:
       github_environment: pr
       azure_environment_name: pr-rwa-${{ github.event.pull_request.number }}
-      resource_group: pr-rwa-${{ github.event.pull_request.number }}-rg
+      #resource_group: pr-rwa-${{ github.event.pull_request.number }}-rg
       run_integration_test: true
       
   clean-up:
@@ -49,5 +49,5 @@ jobs:
     with:
       github_environment: pr
       azure_environment_name: pr-rwa-${{ github.event.pull_request.number }}
-      resource_group: pr-rwa-${{ github.event.pull_request.number }}-rg
+      #resource_group: pr-rwa-${{ github.event.pull_request.number }}-rg
 
