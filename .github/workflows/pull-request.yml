@@ -10,6 +10,7 @@ on:
 
 concurrency:
   group: PR-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
       
 permissions:
   id-token: write
