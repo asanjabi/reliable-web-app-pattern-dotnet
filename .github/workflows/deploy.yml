@@ -84,13 +84,13 @@ jobs:
         run: |
           Add-Content azure.yaml "`nresourceGroup: ${{ env.AZURE_RESOURCE_GROUP }}"
 
-      - name: Azure Dev Provision
+      - name: Provision infrastructure
         shell: pwsh
         working-directory: ${{ env.INFRA_ARTIFACTS_DIR }}
         run: |
           azd provision --no-prompt
 
-      - name: Azure Dev Deploy
+      - name: Deploy applications
         shell: pwsh
         working-directory: ${{ env.BINARY_ARTIFACTS_DIR }}
         run: |

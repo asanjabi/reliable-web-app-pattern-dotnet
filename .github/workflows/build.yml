@@ -88,7 +88,7 @@ jobs:
           Copy-Item -R ./src $infraDir -Filter *.csproj
           dir ./buildartifacts -s
 
-      - name: Publish infrastructure files
+      - name: Publish infrastructure artifacts
         uses: actions/upload-artifact@v3
         with:
             name: infra
