@@ -2,9 +2,9 @@
 
 name: "RWA CI Build"
 
-on:
-  schedule:
-  - cron: '0 0,12 * * *'
+#on:
+#  schedule:
+#  - cron: '0 0,12 * * *'
 
 concurrency:
   group: Scheduled-Build
